@@ -4,7 +4,8 @@
 #
 #   sudo ./install.sh --check                      # report what is missing / would change, touch nothing
 #   sudo ./install.sh                              # install what is missing, (re)deploy config, start
-#   sudo ./install.sh --base-router 0x.. --skale-router 0x.. --base-index-from N --skale-index-from N
+#   sudo ./install.sh --base-router 0x.. --skale-router 0x..   (index.from comes from config/agent-config.json;
+#                                                                --base-index-from/--skale-index-from are informational)
 #   sudo ./install.sh --testnet                    # basesepolia <-> skalebasesepolia names + RPCs
 #   sudo ./install.sh --no-start                   # install + configure, do not start containers
 #
@@ -73,7 +74,7 @@ esac
 log "OS: $PRETTY_NAME (package manager: $PKG)  mode: $([ "$CHECK" = 1 ] && echo CHECK || echo INSTALL)"
 
 need_pkgs=()
-for p in curl jq git ca-certificates; do command -v "$p" >/dev/null 2>&1 || need_pkgs+=("$p"); done
+for p in curl jq git ca-certificates python3; do command -v "$p" >/dev/null 2>&1 || need_pkgs+=("$p"); done
 if [ "$PKG" = apt ]; then
   command -v chronyd >/dev/null 2>&1 || systemctl is-active --quiet systemd-timesyncd || need_pkgs+=(chrony)
   dpkg -s unattended-upgrades >/dev/null 2>&1 || need_pkgs+=(unattended-upgrades)

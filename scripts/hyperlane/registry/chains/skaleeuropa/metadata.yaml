@@ -13,6 +13,10 @@ rpcUrls:
   - http: https://mainnet.skalenodes.com/v1/elated-tan-skat
     pagination:
       maxBlockRange: 5000
+  # same chain behind SKALE's named alias (verified chainId 0x79f99296 on 2026-09-27); agents fall back to it
+  - http: https://mainnet.skalenodes.com/v1/europa
+    pagination:
+      maxBlockRange: 5000
 nativeToken:
   name: sFUEL
   symbol: sFUEL

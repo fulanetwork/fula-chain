@@ -75,13 +75,10 @@ services:
       - ${GAS_PAYMENT_ENFORCEMENT}
       - --metricsPort
       - "9091"
-    environment:
-      CONFIG_FILES: /config/agent-config.json
-      RUST_BACKTRACE: "1"
-      # Start indexing at our own deployment blocks, not at the mailbox genesis (Base's mailbox has
-      # years of history; indexing it all takes days and hammers the RPC).
-      HYP_CHAINS_${BASE_CHAIN_UPPER}_INDEX_FROM: ${BASE_INDEX_FROM}
-      HYP_CHAINS_${SKALE_CHAIN_UPPER}_INDEX_FROM: ${SKALE_INDEX_FROM}
+    # index.from (start indexing at OUR deployment blocks, not the mailbox genesis — Base's mailbox
+    # has years of history) is carried INSIDE config/agent-config.json, written by
+    # `yarn hl:agent-config:<lane>`. Not as env vars: compose does not interpolate mapping keys, and an
+    # env override of 0 would silently send the relayer back to genesis.
     volumes:
       - ./config/agent-config.json:/config/agent-config.json:ro
       - ./db-relayer:/hyperlane_db

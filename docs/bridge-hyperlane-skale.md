@@ -69,6 +69,12 @@ new code is visible before the next transaction (`lib/artifacts.ts`).
 | Gas | users pay Base gas only; no IGP (the router hook is the merkle hook alone) | free (sFUEL); the agent config's `interchainGasPaymaster` points at the ProtocolFee hook, a real contract that never emits GasPayment |
 | Kill switches | `pause.ts` (PausableIsm), unenroll, `applyStage.ts` to a zero-cap ISM | same |
 
+Deploy-order note (reviewer concern): the router is initialised with ISM = 0 (mailbox default)
+because the RateLimitedIsm needs the router address first. That window is closed by ordering, not by
+luck: no remote router is enrolled until AFTER `setInterchainSecurityModule` on both chains, and
+`handle()` rejects any sender that is not the enrolled remote router — so nothing can be released
+through the default ISM. Read-back checks both facts.
+
 Why the hook is the merkle hook **by address**: Base's mailbox required hook is `protocolFee`
 (type 8) and the merkle hook lives in the *default* fallback-routing hook, so a custom hook on the
 router replaces the merkle hook unless it *is* the merkle hook — and the default hook's IGP has no

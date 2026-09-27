@@ -29,15 +29,23 @@ if [ -n "$newest" ]; then
   fi
 else alert "no validator checkpoints on disk"; fi
 
-# relayer Base ETH balance (JSON-RPC, no node needed)
+# agent wallet balances (JSON-RPC, no node needed). The relayer pays Base gas for every SKALE->Base
+# delivery — running dry is the most common self-hosted bridge outage. Both agents also need a
+# non-zero (free) SKALE balance to send transactions there.
+balance_of() { # addr rpc -> decimal native balance or ""
+  local hex; hex="$(curl -fsS -m 10 -H 'content-type: application/json' --data "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"eth_getBalance\",\"params\":[\"$1\",\"latest\"]}" "$2" | jq -r .result 2>/dev/null)"
+  [ -n "$hex" ] && [ "$hex" != "null" ] && printf '%s' "$hex" | python3 -c 'import sys; print(int(sys.stdin.read().strip(),16)/1e18)' 2>/dev/null || true
+}
 if [ -n "${RELAYER_ADDRESS:-}" ] && [ -n "${BASE_RPC:-}" ]; then
-  hex="$(curl -fsS -m 10 -H 'content-type: application/json' --data "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"eth_getBalance\",\"params\":[\"$RELAYER_ADDRESS\",\"latest\"]}" "$BASE_RPC" | jq -r .result 2>/dev/null)"
-  if [ -n "$hex" ] && [ "$hex" != "null" ]; then
-    eth="$(printf '%s' "$hex" | python3 -c 'import sys; print(int(sys.stdin.read().strip(),16)/1e18)' 2>/dev/null || echo "")"
-    if [ -n "$eth" ]; then
-      awk -v e="$eth" -v m="${RELAYER_MIN_BASE_ETH:-0.005}" 'BEGIN{exit !(e+0 < m+0)}' && alert "relayer Base ETH low: $eth" || say "ok relayer Base ETH $eth"
-    fi
-  else say "warn could not read relayer balance"; fi
+  eth="$(balance_of "$RELAYER_ADDRESS" "$BASE_RPC")"
+  if [ -n "$eth" ]; then awk -v e="$eth" -v m="${RELAYER_MIN_BASE_ETH:-0.005}" 'BEGIN{exit !(e+0 < m+0)}' && alert "relayer Base ETH low: $eth" || say "ok relayer Base ETH $eth"; else say "warn could not read relayer Base balance"; fi
+fi
+if [ -n "${SKALE_RPC:-}" ]; then
+  for who in RELAYER VALIDATOR; do
+    addr="$(eval "echo \${${who}_ADDRESS:-}")"; [ -n "$addr" ] || continue
+    b="$(balance_of "$addr" "$SKALE_RPC")"
+    if [ -n "$b" ]; then awk -v e="$b" 'BEGIN{exit !(e+0 < 0.0001)}' && alert "$who SKALE gas balance ~0 ($b): claim from the faucet" || say "ok $who SKALE gas $b"; else say "warn could not read $who SKALE balance"; fi
+  done
 fi
 
 # disk
