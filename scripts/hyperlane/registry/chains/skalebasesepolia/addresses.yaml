@@ -1,0 +1,12 @@
+# Written by scripts/hyperlane/deployCore.ts on 2026-09-27T06:30:55.391Z (artifacts-shanghai, core 12.1.0). Do not edit by hand.
+proxyAdmin: "0x70b5432E22164b2CE4361213894bB28ED5Ab4798"
+mailboxImplementation: "0xb58775ca22E86cb2082ee3e4db6dD72f0e28A3c1"
+mailbox: "0x2777033d6360Bf6A378107C72fa6a10E4621FC9e"
+merkleTreeHook: "0x78B4DB0C39e59386B2270D82A29af1eDB2927EDa"
+protocolFee: "0xd07B62b5BF5030Adbfa722E7ABd1152D4c6396c0"
+interchainSecurityModule: "0x95c8f429aF5EF5a28fa0a35960168d110B0D19B1"
+validatorAnnounce: "0x0495C80d7A71F5088d51956A5C55F3c931d43C95"
+staticAggregationIsmFactory: "0x1E90000F0Ef8aaFe9a9FeC9E61dBAbABa5330Ac4"
+staticMessageIdMultisigIsmFactory: "0x7F7BbeA3877c3C402E9c2B9E2e830F819Cd2e799"
+testRecipient: "0x6613cAeE493e63cA018E9E67F7f5C66c09d4CF20"
+interchainGasPaymaster: "0xd07B62b5BF5030Adbfa722E7ABd1152D4c6396c0"

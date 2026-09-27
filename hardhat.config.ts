@@ -264,10 +264,21 @@ const config: HardhatUserConfig = {
       accounts: vars.has("PK") ? [vars.get("PK")] : [],
       chainId: 4690,
     },
-    "skale-testnet": {
-      url: "https://testnet.skalenodes.com/v1/juicy-low-small-testnet",
-      accounts: vars.has("PK") ? [vars.get("PK")] : [],
-      chainId: 1444673419,
+    // SKALE Base Sepolia — SKALE's current testnet (same skaled software and gas model as Europa:
+    // fixed 100000 wei gas price, EIP-1559 fields present, contract deployment open, CREDIT gas
+    // token from https://base-sepolia-faucet.skale.space). Replaces the retired Europa Hub testnet
+    // (juicy-low-small-testnet), whose hostname no longer resolves (checked 2026-09-27). Used for
+    // the Hyperlane Base<->SKALE bridge rehearsal (scripts/hyperlane). TESTNET KEYS ONLY.
+    "skale-base-sepolia": {
+      url: "https://base-sepolia-testnet.skalenodes.com/v1/jubilant-horrible-ancha",
+      accounts: (() => {
+        const accounts: string[] = [];
+        if (vars.has("PK_TEST")) accounts.push(vars.get("PK_TEST"));
+        if (vars.has("ADMIN_PK_TEST")) accounts.push(vars.get("ADMIN_PK_TEST"));
+        return accounts;
+      })(),
+      chainId: 324705682,
+      gasPrice: 100000,
     },
     "sfi-testnet": {
       url: "https://rpc-testnet.singularityfinance.ai",
@@ -330,9 +341,7 @@ const config: HardhatUserConfig = {
       "iotex-testnet": vars.has("IOTEXSCAN_API_KEY")
         ? vars.get("IOTEXSCAN_API_KEY")
         : "arbitrary",
-      "skale-testnet": vars.has("SKALESCAN_API_KEY")
-        ? vars.get("SKALESCAN_API_KEY")
-        : "arbitrary",
+      "skale-base-sepolia": "empty",
     },*/
     customChains: [
       {
@@ -368,12 +377,11 @@ const config: HardhatUserConfig = {
         },
       },
       {
-        network: "skale-testnet",
-        chainId: 1444673419,
+        network: "skale-base-sepolia",
+        chainId: 324705682,
         urls: {
-          apiURL:
-            "https://juicy-low-small-testnet.explorer.testnet.skalenodes.com/api",
-          browserURL: "https://europa-explorer.testnet.skalenodes.com",
+          apiURL: "https://base-sepolia-testnet-explorer.skalenodes.com/api",
+          browserURL: "https://base-sepolia-testnet-explorer.skalenodes.com",
         },
       },
     ],

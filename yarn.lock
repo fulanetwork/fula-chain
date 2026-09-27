@@ -3994,6 +3994,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/js-yaml@npm:^4.0.9":
+  version: 4.0.9
+  resolution: "@types/js-yaml@npm:4.0.9"
+  checksum: e5e5e49b5789a29fdb1f7d204f82de11cb9e8f6cb24ab064c616da5d6e1b3ccfbf95aa5d1498a9fbd3b9e745564e69b4a20b6c530b5a8bbb2d4eb830cda9bc69
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:*, @types/json-schema@npm:^7.0.15":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -6483,6 +6490,7 @@ __metadata:
     "@typechain/hardhat": ^9.1.0
     "@types/chai": ^4.2.0
     "@types/eslint": 9.6.1
+    "@types/js-yaml": ^4.0.9
     "@types/mocha": ">=9.1.0"
     "@types/node": 24.0.13
     "@types/yargs": ^17.0.33
@@ -6493,6 +6501,7 @@ __metadata:
     hardhat: 2.25.0
     hardhat-contract-sizer: ^2.10.0
     hardhat-gas-reporter: 2.3.0
+    js-yaml: ^4.1.0
     solidity-bytes-utils: ^0.8.2
     solidity-coverage: 0.8.16
     ts-node: ">=8.0.0"

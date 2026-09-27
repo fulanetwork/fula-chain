@@ -1,0 +1,90 @@
+# FULA Base <-> SKALE Hyperlane agents: ONE validator (origin = the SKALE chain) and ONE relayer
+# (both directions), on one Linux server. Installed and started by install.sh; see README.md.
+#
+# Both containers share the ./signatures volume: the validator writes checkpoint signatures there
+# (localStorage checkpoint syncer) and the relayer reads them (--allowLocalCheckpointSyncers).
+# That is what lets a single box work without S3/GCS.
+#
+# All values in ${...} come from .env (written by install.sh from .env.example + generated keys).
+name: fula-hyperlane
+
+x-agent: &agent
+  image: ghcr.io/hyperlane-xyz/hyperlane-agent:${AGENT_TAG}
+  restart: unless-stopped
+  user: "${AGENT_UID:-1000}:${AGENT_GID:-1000}"
+  environment:
+    CONFIG_FILES: /config/agent-config.json
+    RUST_BACKTRACE: "1"
+  logging:
+    driver: json-file
+    options:
+      max-size: "50m"
+      max-file: "5"
+  deploy:
+    resources:
+      limits:
+        memory: 1536M
+
+services:
+  validator:
+    <<: *agent
+    container_name: fula-hl-validator
+    command:
+      - ./validator
+      - --db
+      - /hyperlane_db
+      - --originChainName
+      - ${SKALE_CHAIN}
+      - --checkpointSyncer.type
+      - localStorage
+      - --checkpointSyncer.path
+      - /signatures
+      - --validator.type
+      - hexKey
+      - --validator.key
+      - ${VALIDATOR_KEY}
+      - --defaultSigner.key
+      - ${VALIDATOR_KEY}
+      - --metricsPort
+      - "9090"
+    volumes:
+      - ./config/agent-config.json:/config/agent-config.json:ro
+      - ./db-validator:/hyperlane_db
+      - ./signatures:/signatures
+    ports:
+      - "127.0.0.1:9090:9090"
+
+  relayer:
+    <<: *agent
+    container_name: fula-hl-relayer
+    depends_on:
+      - validator
+    command:
+      - ./relayer
+      - --db
+      - /hyperlane_db
+      - --relayChains
+      - ${BASE_CHAIN},${SKALE_CHAIN}
+      - --allowLocalCheckpointSyncers
+      - "true"
+      - --defaultSigner.key
+      - ${RELAYER_KEY}
+      - --whitelist
+      - ${RELAYER_WHITELIST}
+      - --gasPaymentEnforcement
+      - ${GAS_PAYMENT_ENFORCEMENT}
+      - --metricsPort
+      - "9091"
+    environment:
+      CONFIG_FILES: /config/agent-config.json
+      RUST_BACKTRACE: "1"
+      # Start indexing at our own deployment blocks, not at the mailbox genesis (Base's mailbox has
+      # years of history; indexing it all takes days and hammers the RPC).
+      HYP_CHAINS_${BASE_CHAIN_UPPER}_INDEX_FROM: ${BASE_INDEX_FROM}
+      HYP_CHAINS_${SKALE_CHAIN_UPPER}_INDEX_FROM: ${SKALE_INDEX_FROM}
+    volumes:
+      - ./config/agent-config.json:/config/agent-config.json:ro
+      - ./db-relayer:/hyperlane_db
+      - ./signatures:/signatures:ro
+    ports:
+      - "127.0.0.1:9091:9091"

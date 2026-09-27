@@ -1,0 +1,32 @@
+# Hyperlane chain metadata for SKALE Base Sepolia (SKALE's current testnet; same skaled software and
+# gas model as Europa). Rehearsal stand-in for skaleeuropa. Mirror of scripts/hyperlane/config.ts.
+name: skalebasesepolia
+displayName: SKALE Base Sepolia
+displayNameShort: SKALE Sepolia
+chainId: 324705682
+domainId: 324705682
+protocol: ethereum
+technicalStack: other
+isTestnet: true
+rpcUrls:
+  - http: https://base-sepolia-testnet.skalenodes.com/v1/jubilant-horrible-ancha
+    pagination:
+      maxBlockRange: 5000
+nativeToken:
+  name: CREDIT
+  symbol: CREDIT
+  decimals: 18
+blocks:
+  confirmations: 1
+  reorgPeriod: 0
+  estimateBlockTime: 3
+blockExplorers:
+  - name: Blockscout
+    url: https://base-sepolia-testnet-explorer.skalenodes.com
+    apiUrl: https://base-sepolia-testnet-explorer.skalenodes.com/api
+    family: blockscout
+transactionOverrides:
+  gasPrice: 100000
+deployer:
+  name: Functionland
+  url: https://fula.network

@@ -1,0 +1,15 @@
+# Rendered by scripts/hyperlane/deployCore.ts from config.ts — do not edit by hand.
+owner: "0x694451c22627eff3Dd8C2D7002197e69FC687e7C"
+defaultIsm:
+  type: trustedRelayerIsm
+  relayer: "0x694451c22627eff3Dd8C2D7002197e69FC687e7C"
+defaultHook:
+  type: merkleTreeHook
+requiredHook:
+  type: protocolFee
+  owner: "0x694451c22627eff3Dd8C2D7002197e69FC687e7C"
+  beneficiary: "0x694451c22627eff3Dd8C2D7002197e69FC687e7C"
+  maxProtocolFee: "100000000000000000"
+  protocolFee: "0"
+proxyAdmin:
+  owner: "0x694451c22627eff3Dd8C2D7002197e69FC687e7C"

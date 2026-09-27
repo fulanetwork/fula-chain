@@ -1,0 +1,17 @@
+{
+    "name":  "fula-hyperlane-contracts",
+    "private":  true,
+    "version":  "1.0.0",
+    "description":  "Reproducible SHANGHAI-EVM build of the Hyperlane contracts the FULA Base\u003c-\u003eSKALE bridge deploys (skaled 5.2 lacks Cancun opcodes, so the CLI\u0027s Cancun bytecode cannot run on SKALE).",
+    "scripts":  {
+                    "build":  "hardhat --config ./hardhat.config.js compile \u0026\u0026 node export-artifacts.js"
+                },
+    "devDependencies":  {
+                            "hardhat":  "2.25.0"
+                        },
+    "dependencies":  {
+                         "@hyperlane-xyz/core":  "12.1.0",
+                         "@openzeppelin/contracts":  "4.9.3",
+                         "@openzeppelin/contracts-upgradeable":  "4.9.3"
+                     }
+}

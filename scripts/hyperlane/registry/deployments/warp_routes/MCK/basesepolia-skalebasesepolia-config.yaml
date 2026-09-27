@@ -1,0 +1,20 @@
+# Written by scripts/hyperlane/deployWarp.ts on 2026-09-27T06:33:26.992Z. Registry-format warp core config.
+tokens:
+  - chainName: basesepolia
+    standard: EvmHypCollateral
+    decimals: 18
+    symbol: MCK
+    name: MCK
+    addressOrDenom: "0x5F0C9486Eda50f7a4b36c46aabed90D5cbCab6ED"
+    collateralAddressOrDenom: "0xbF4721A620B437a4A112942Fe113b40bb3184FE0"
+    connections:
+      - token: ethereum|skalebasesepolia|0x1a93D27cE441e86D3Fe0B2c3C7f76a9B6BA936f3
+  - chainName: skalebasesepolia
+    standard: EvmHypCollateral
+    decimals: 18
+    symbol: MCK
+    name: MCK
+    addressOrDenom: "0x1a93D27cE441e86D3Fe0B2c3C7f76a9B6BA936f3"
+    collateralAddressOrDenom: "0xba5640948BD7B0B54ea773530d23Bae5A777b661"
+    connections:
+      - token: ethereum|basesepolia|0x5F0C9486Eda50f7a4b36c46aabed90D5cbCab6ED

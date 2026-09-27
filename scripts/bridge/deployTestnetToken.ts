@@ -33,6 +33,8 @@ const FORBIDDEN_MAINNETS: Record<string, string> = {
 const INITIAL_SUPPLY: Record<string, bigint> = {
   sepolia: ethers.parseEther("1470000000"),
   "base-sepolia": ethers.parseEther("386311783"),
+  // SKALE Europa mirror for the Hyperlane rehearsal (scripts/hyperlane): 465,000,010 on 2026-09-27.
+  "skale-base-sepolia": ethers.parseEther("465000010"),
 };
 
 async function main() {

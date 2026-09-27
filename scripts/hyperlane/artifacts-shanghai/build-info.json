@@ -1,0 +1,28 @@
+{
+  "core": "12.1.0",
+  "openzeppelin": "4.9.3",
+  "solc": "0.8.33",
+  "evmVersion": "shanghai",
+  "optimizer": {
+    "enabled": true,
+    "runs": 3599
+  },
+  "builtAt": "2026-09-27T06:27:40.527Z",
+  "contracts": [
+    "Mailbox",
+    "ProxyAdmin",
+    "TransparentUpgradeableProxy",
+    "ValidatorAnnounce",
+    "MerkleTreeHook",
+    "ProtocolFee",
+    "TrustedRelayerIsm",
+    "PausableIsm",
+    "RateLimitedIsm",
+    "StaticAggregationIsmFactory",
+    "StaticAggregationIsm",
+    "StaticMessageIdMultisigIsmFactory",
+    "StaticMessageIdMultisigIsm",
+    "HypERC20Collateral",
+    "TestRecipient"
+  ]
+}

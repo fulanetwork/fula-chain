@@ -1,0 +1,34 @@
+# Hyperlane chain metadata for SKALE Europa Hub (mainnet). Hyperlane has no deployment on SKALE;
+# this local registry entry is what `hyperlane core deploy` uses. Mirror of scripts/hyperlane/config.ts.
+# Schema: https://github.com/hyperlane-xyz/hyperlane-monorepo/blob/main/typescript/sdk/src/metadata/chainMetadataTypes.ts
+name: skaleeuropa
+displayName: SKALE Europa Hub
+displayNameShort: Europa
+chainId: 2046399126
+domainId: 2046399126
+protocol: ethereum
+technicalStack: other
+isTestnet: false
+rpcUrls:
+  - http: https://mainnet.skalenodes.com/v1/elated-tan-skat
+    pagination:
+      maxBlockRange: 5000
+nativeToken:
+  name: sFUEL
+  symbol: sFUEL
+  decimals: 18
+blocks:
+  confirmations: 1
+  reorgPeriod: 0
+  estimateBlockTime: 3
+blockExplorers:
+  - name: Blockscout
+    url: https://elated-tan-skat.explorer.mainnet.skalenodes.com
+    apiUrl: https://elated-tan-skat.explorer.mainnet.skalenodes.com/api
+    family: blockscout
+# SKALE gas is free and the price is fixed at 100000 wei; agents and the CLI use this override.
+transactionOverrides:
+  gasPrice: 100000
+deployer:
+  name: Functionland
+  url: https://fula.network
