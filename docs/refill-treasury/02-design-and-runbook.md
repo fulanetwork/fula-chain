@@ -141,3 +141,36 @@ after its transaction; never whitelist or fund it.
   explorer-verification path.
 - Yarn shortcuts: `refill:dryrun:<net>`, `refill:deploy:<net>`, `refill:status:<net>`,
   `refill:rehearse:sepolia`, `test:refill` (see `scripts/RefillTreasury/README.md`).
+
+## Refill button in the user interfaces (2026-09-28)
+
+Every UI whose transaction can fail because the *contract* (not the user) is short of FULA now
+shows a Refill control instead of a bare error. The control calls `refill(poolId)` on this chain's
+treasury; the clicking user pays only the gas. It never auto-fires and it is pre-simulated on a read
+RPC before the wallet opens, so a refill that would revert (`CooldownActive`, `NotBelowThreshold`,
+`TreasuryEmpty`, `EnforcedPause`) never costs gas.
+
+| UI | Contract whose balance is checked | Treasury pool? | Behaviour when short |
+|---|---|---|---|
+| fulawebsite / fxwebsite `fula-staking` (ETH, Base, SKALE) | `StakingEngineLinear.rewardPool()` / SELWM reward pool | yes (ETH 0, Base 2, SKALE 2) | Claim and Unstake disabled, Refill button; the unstake-after-failed-claim path is closed (unstake only proceeds after a *mined* claim) |
+| fulawebsite / fxwebsite `fula-staking` (IoTeX) | reward pool | no treasury on IoTeX | "not a treasury pool, contact the Association" text |
+| fulawebsite / fxwebsite `fula-vip-staking` (Base) | VIP `RewardPool` | yes (Base 0) | same as above |
+| fulawebsite `bridge` (LayerZero lane) | destination `FulaOFTAdapter` escrow | yes (ETH 1, Base 4) | Refill button on the *destination* chain in the limits line and in the "parked" banner; retry on `InsufficientLiquidity` shows the banner instead of LayerZero Scan |
+| fulawebsite `bridge` (Hyperlane lane) | destination router | no | association text |
+| claim-ui-vite Testnet Mining claim | `TestnetMiningRewards` (self-holding) | yes (Base 3, SKALE 1) | Claim disabled + Refill button |
+| claim-ui-vite Distribution / Airdrop claim | `TokenDistributionEngine` / `AirdropContract` | no (vesting is pre-funded) | association text |
+| mainnet-claim-web (RewardEngine mining claims) | `RewardEngine.stakingPool()` | yes (Base 1, SKALE 0) | claim pre-flighted on Check Rewards; `InsufficientRewards` → Refill section |
+
+Shared code: `fulawebsite/js/fula-refill.js` (= `fxwebsite/js/fula-refill.js`, classic script on the
+page's global `Web3`, works with 1.8 and 4.x), `claim-ui-vite/src/utils/contractErrors.ts` +
+`src/hooks/useRefillPool.ts` + `src/components/common/RefillButton.tsx`, and inline ethers code in
+`mainnet-claim-web/app.js` (`renderRefillSection`). Revert detection covers
+`InsufficientRewardsInPool()`, the string `Insufficient rewards in pool` (SKALE's deployed SELWM),
+`ERC20InsufficientBalance(contract,…)`, `InsufficientRewards()`, `InsufficientLiquidity(…)` (pool
+kinds); `InsufficientBalance(…)` from `StakingPool` (stake kind, not refillable) and
+`LowContractBalance(…)` (distribution kind, association-funded).
+
+**Until governance funds the treasuries every page shows the disabled state "the refill treasury is
+empty — needs governance funding"**: all three treasuries held 0 FULA on 2026-09-28. Funding is one
+`transferFromContract` per chain into the treasury (the 48h whitelist of the treasuries is done). Do
+NOT fund the dead Base duplicate `0x10F9CA13…`.
